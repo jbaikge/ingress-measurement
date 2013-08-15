@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"log"
 	"sync"
@@ -48,6 +49,7 @@ func main() {
 			}
 			if p.Find() {
 				log.Printf("Found OTP: %s", p.OTP)
+				log.Printf("Time string: %s", bytes.Replace(p.TimeString, spaces[0:1], []byte{' '}, -1))
 			}
 		}(Formats[i])
 	}
