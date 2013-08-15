@@ -18,7 +18,7 @@ func TestSpacerBytes(t *testing.T) {
 	if l := len(b[0]); l != 1 {
 		t.Fatalf("Invalid length of first set: %d", l)
 	}
-	if v := b[0][0]; v != ' ' {
+	if v := b[0][0]; v != spaces[0] {
 		t.Fatalf("Invalid value for first char: %d", v)
 	}
 }

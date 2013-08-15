@@ -17,7 +17,7 @@ var (
 	_ sort.Interface = new(Spacer) // Ensure Spacer follows sort.Interface
 
 	MaxSpaces = len(spaces)
-	spaces    = []byte("   ")
+	spaces    = []byte("XXX")
 )
 
 func NewSpacer(words, spaces int) (s *Spacer) {

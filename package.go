@@ -1,19 +1,28 @@
 package main
 
 import (
+	"encoding/hex"
 	"time"
 )
 
 type Package struct {
-	Format     Format       // Time string layout
-	OTPKey     string       // OTP Key (gets hashed)
-	TargetHash string       // Hash provided by Ingress
-	Time       time.Time    // Time inserted into Format
-	TimeRange  [2]time.Time // Range of times to test
+	Format     Format       // Possible time string format
+	Hash       []byte       // Hash provided by Ingress
+	TimeRange  [2]time.Time // Range of times to test, t0 provided by Ingress
+	TimeString []byte       // Timestring provided by Ingress
 }
 
-func (p Package) String() string {
-	return ""
+func NewPackage(f Format, start time.Time, ts string, h string) (p *Package, err error) {
+	p = &Package{
+		Format: f,
+		TimeRange: [2]time.Time{
+			start,
+			start.Add(5 * time.Minute),
+		},
+		TimeString: []byte(ts),
+	}
+	if p.Hash, err = hex.DecodeString(h); err != nil {
+		return
+	}
+	return
 }
-
-func (p Package) Hash() {}
