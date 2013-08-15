@@ -26,18 +26,19 @@ func TestSpacerBytes(t *testing.T) {
 func TestSingleSpacer(t *testing.T) {
 	// Two words, need 3 spaces to complete the required width
 	s := NewSpacer(2, 3)
-	expect := []int{
-		2, 1, 0,
-		2, 0, 1,
-		1, 2, 0,
-		1, 0, 2,
-		0, 2, 1,
-		0, 1, 2,
+	expect := []byte{
+		0, 0, 0, 1, 1, 1,
+		0, 0, 1, 1, 0, 1,
+		0, 1, 0, 0, 1, 1,
+		0, 1, 0, 1, 0, 1,
+		0, 1, 1, 1, 0, 0,
+		1, 1, 0, 0, 0, 1,
+		1, 1, 0, 1, 0, 0,
 	}
-	for i, v := 0, s.Iter(); v != nil; i, v = i+3, s.Next() {
+	for i, v := 0, s.Iter(); v != nil; i, v = i+6, s.Next() {
 		for j, got := range s.State {
 			if exp := expect[i+j]; exp != got {
-				t.Error("[%d][%d] Expected %d; Got %d", i, j, exp, got)
+				t.Errorf("[%d][%d] %v Expected %d; Got %d", i, j, s.State, exp, got)
 			}
 		}
 	}
