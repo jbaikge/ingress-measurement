@@ -37,15 +37,15 @@ func NewPackage(f Format, m int, start time.Time, ts string, h string) (p *Packa
 
 func (p *Package) Find() bool {
 	for t := p.TimeRange[0]; t.Before(p.TimeRange[1]); t = t.Add(time.Second) {
-		log.Printf("Time: %s", t)
 		f := p.Format.Encode(p.Measurement, t)
-		log.Printf("Encoded: %s", f)
 		g := NewGenerator(f, len(p.TimeString))
 		for s := g.Iter(); s != nil; s = g.Next() {
-			p.hasher.Write(s)
+			otp := OTP(s, p.TimeString)
+			p.hasher.Write(otp)
 			sum := p.hasher.Sum(nil)
 			if sum[0] == p.Hash[0] && bytes.Equal(sum, p.Hash) {
 				log.Printf("Found %s [%x]", s, sum)
+				return true
 			}
 			p.hasher.Reset()
 		}
