@@ -107,7 +107,6 @@ var tests = []struct {
 }
 
 func TestPackageFind(t *testing.T) {
-	return
 	for _, test := range tests {
 		t.Logf("Testing Operation: %s [%d]", test.Operation, test.Measurement)
 		p, err := NewPackage(
@@ -121,6 +120,5 @@ func TestPackageFind(t *testing.T) {
 			t.Fatal(err)
 		}
 		p.Find()
-		break
 	}
 }

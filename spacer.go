@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/cznic/mathutil"
-	"log"
 	"sort"
 )
 
@@ -12,6 +11,7 @@ type Spacer struct {
 	Min, Max int // Min - Max space count for each grouping
 	Spaces   int // Spaces required to pad rest of string
 	State    []byte
+	Words    int
 }
 
 var (
@@ -22,13 +22,13 @@ var (
 )
 
 func NewSpacer(words, spaces int) (s *Spacer) {
-	log.Printf("NewSpacer(%d, %d)", words, spaces)
 	s = &Spacer{
 		Min:    0,
-		Max:    MaxSpaces - 1,
+		Max:    MaxSpaces,
 		Spaces: spaces,
+		Words:  words,
 	}
-	s.State = make([]byte, (words+1)*s.Max)
+	s.State = make([]byte, (s.Words+1)*s.Max)
 	return
 }
 
@@ -38,7 +38,7 @@ func (s *Spacer) Bytes() (b [][]byte) {
 	b = make([][]byte, len(s.State)/s.Max)
 	var l int
 	for i := range b {
-		l = 1
+		l = 0
 		for _, bit := range s.State[i*s.Max : (i+1)*s.Max] {
 			if bit == 1 {
 				l++
@@ -46,15 +46,20 @@ func (s *Spacer) Bytes() (b [][]byte) {
 		}
 		b[i] = spaces[:l]
 	}
-	b[0] = b[0][1:]
-	b[len(b)-1] = b[len(b)-1][1:]
+	//b[0] = b[0][1:]
+	//b[len(b)-1] = b[len(b)-1][1:]
 	return
 }
 
 // Initalize the state
 func (s *Spacer) Iter() [][]byte {
-	for i := len(s.State) - s.Spaces; i < len(s.State); i++ {
+	for i := len(s.State) - s.Spaces - s.Words + 1; i < len(s.State); i++ {
 		s.State[i] = 1
+	}
+	// Two words don't need the single-space redistribution that more than
+	// two words require
+	if s.Words > 2 {
+		return s.Next()
 	}
 	return s.Bytes()
 }
@@ -73,6 +78,9 @@ func (s *Spacer) Next() [][]byte {
 				goto ReNext
 			}
 			high = s.State[j] == 1
+		}
+		if !high && i > 0 && i < len(s.State)-s.Max {
+			goto ReNext
 		}
 	}
 
