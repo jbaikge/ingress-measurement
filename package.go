@@ -5,7 +5,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"hash"
-	"log"
 	"time"
 )
 
@@ -15,6 +14,7 @@ type Package struct {
 	Measurement int          // Measurement number provided by Ingress
 	TimeRange   [2]time.Time // Range of times to test, t0 provided by Ingress
 	TimeString  []byte       // Timestring provided by Ingress
+	OTP         []byte
 	hasher      hash.Hash
 }
 
@@ -39,13 +39,12 @@ func (p *Package) Find() bool {
 	for t := p.TimeRange[0]; t.Before(p.TimeRange[1]); t = t.Add(time.Second) {
 		f := p.Format.Encode(p.Measurement, t)
 		g := NewGenerator(f, len(p.TimeString))
-		log.Printf("TimeString: %s Time: %s", p.TimeString, t)
 		for s := g.Iter(); s != nil; s = g.Next() {
 			otp := OTP(s, p.TimeString)
 			p.hasher.Write(otp)
 			sum := p.hasher.Sum(nil)
 			if sum[0] == p.Hash[0] && bytes.Equal(sum, p.Hash) {
-				log.Printf("Found %s [%x]", s, sum)
+				p.OTP = otp
 				return true
 			}
 			p.hasher.Reset()

@@ -8,6 +8,7 @@ import (
 var tests = []struct {
 	Operation   string
 	Measurement int
+	Start       time.Time
 	Original    string
 	Padded      string
 	OTP         string
@@ -17,6 +18,7 @@ var tests = []struct {
 	{
 		Operation:   "Minotaur",
 		Measurement: 1,
+		Start:       time.Date(2013, 8, 1, 2, 0, 0, 0, time.Local),
 		Original:    "TWO O CLOCK FOUR MINUTES AND THIRTY EIGHT SECONDS",
 		Padded:      "TWOXOXCLOCKXFOURXMINUTESXANDXTHIRTYXEIGHTXSECONDS",
 		OTP:         "ZPCDKCAPANHLJTXFBNZEJOHZELDOJPOLPVGLXNMLPBKPNPBQJ",
@@ -26,6 +28,7 @@ var tests = []struct {
 	{
 		Operation:   "Minotaur",
 		Measurement: 2,
+		Start:       time.Date(2013, 8, 1, 3, 0, 0, 0, time.Local),
 		Original:    " THREE O  CLOCK ONE MINUTE AND FIFTY FIVE SECONDS",
 		Padded:      "XTHREEXOXXCLOCKXONEXMINUTEXANDXFIFTYXFIVEXSECONDS",
 		OTP:         "VBSPJANJEQMGHQDYQNYDJVULFTCGQTSDKGVXRSDFCHABJMZXV",
@@ -35,6 +38,7 @@ var tests = []struct {
 	{
 		Operation:   "Minotaur",
 		Measurement: 3,
+		Start:       time.Date(2013, 8, 1, 4, 0, 0, 0, time.Local),
 		Original:    " FOUR O  CLOCK  THREE  MINUTES AND TWENTY SECONDS",
 		Padded:      "XFOURXOXXCLOCKXXTHREEXXMINUTESXANDXTWENTYXSECONDS",
 		OTP:         "OISLXYTPMVBXENULQEXVIKUFGAHODYOZWRTEZQJXTXRWQCBHZ",
@@ -44,6 +48,7 @@ var tests = []struct {
 	{
 		Operation:   "Minotaur",
 		Measurement: 4,
+		Start:       time.Date(2013, 8, 1, 5, 0, 0, 0, time.Local),
 		Original:    "FIVE O CLOCK TWO MINUTES AND TWENTY SEVEN SECONDS",
 		Padded:      "FIVEXOXCLOCKXTWOXMINUTESXANDXTWENTYXSEVENXSECONDS",
 		OTP:         "KZUQKFADYLAGSRZMFKTQYGPDDJXIHDKGIWATFBLGZZEFWPWWN",
@@ -53,6 +58,7 @@ var tests = []struct {
 	{
 		Operation:   "Cassandra - Sydney",
 		Measurement: 1,
+		Start:       time.Date(2013, 8, 1, 1, 1, 34, 0, time.Local),
 		Original:    "ONE  MINUTE   THIRTY FOUR  SECONDS   PAST  ONE  O  CLOCK   ",
 		Padded:      "ONEXXMINUTEXXXTHIRTYXFOURXXSECONDSXXXPASTXXONEXXOXXCLOCKXXX",
 		OTP:         "LWIAXSXZNPDJAKBKSQAVRXDHFDDKVAMECERVZDSOHCEPTLEMNLFPRHNMDQG",
@@ -62,6 +68,7 @@ var tests = []struct {
 	{
 		Operation:   "Cassandra - Sydney",
 		Measurement: 2,
+		Start:       time.Date(2013, 8, 1, 2, 0, 0, 0, time.Local),
 		Original:    "  TWO  O  CLOCK AND FOUR  MINUTES  AND FIFTY FIVE SECONDS  ",
 		Padded:      "XXTWOXXOXXCLOCKXANDXFOURXXMINUTESXXANDXFIFTYXFIVEXSECONDSXX",
 		OTP:         "YMBGTLBMLYGNKAFAYTQMJNFMFGBEYFQURUGAHVCDUIXTTOFZSNPVBGQEWWE",
@@ -71,6 +78,7 @@ var tests = []struct {
 	{
 		Operation:   "Cassandra - Sydney",
 		Measurement: 3,
+		Start:       time.Date(2013, 8, 1, 3, 0, 0, 0, time.Local),
 		Original:    "   THREE  MINUTES   FIFTY TWO  SECONDS PAST THREE O CLOCK  ",
 		Padded:      "XXXTHREEXXMINUTESXXXFIFTYXTWOXXSECONDSXPASTXTHREEXOXCLOCKXX",
 		OTP:         "XQMQHNDRAKICVDGBAQTIIKJPYLMSPIJPPMAEQNQBLOSVXXBVSLOYONKQIJB",
@@ -80,6 +88,7 @@ var tests = []struct {
 	{
 		Operation:   "Cassandra - Milan",
 		Measurement: 1,
+		Start:       time.Date(2013, 8, 1, 7, 0, 0, 0, time.Local),
 		Original:    "  FIFTY  FIVE SECONDS   AND   THREE  MINUTES  AFTER   SEVEN",
 		Padded:      "XXFIFTYXXFIVEXSECONDSXXXANDXXXTHREEXXMINUTESXXAFTERXXXSEVEN",
 		OTP:         "TRTRBRYFRYVXMARIWQMSAQBZAZPFQFFHDIZDXTZDUDHLFSFUANESJGZQJIK",
@@ -89,6 +98,7 @@ var tests = []struct {
 	{
 		Operation:   "Cassandra - Milan",
 		Measurement: 2,
+		Start:       time.Date(2013, 8, 1, 8, 0, 0, 0, time.Local),
 		Original:    "  EIGHT O CLOCK   TWO  MINUTES AND   FIFTY   FOUR   SECONDS",
 		Padded:      "XXEIGHTXOXCLOCKXXXTWOXXMINUTESXANDXXXFIFTYXXXFOURXXXSECONDS",
 		OTP:         "PCLYGZFEHWUMGWYUFXYVUZBQVNWLLOYRFEQNQAZDKEKUHURHNIHTNINSQZD",
@@ -98,27 +108,57 @@ var tests = []struct {
 	{
 		Operation:   "Cassandra - Milan",
 		Measurement: 3,
+		Start:       time.Date(2013, 8, 1, 9, 0, 0, 0, time.Local),
 		Original:    "MEASUREMENT THREE  IS  AT  NINE  O THREE AND THIRTY SECONDS",
 		Padded:      "MEASUREMENTXTHREEXXISXXATXXNINEXXOXTHREEXANDXTHIRTYXSECONDS",
 		OTP:         "STBIPKMHJWTPGRIJQUELXPUUDVBEMMIDOLNZSNPHJOOKZPANTFBKOGEKAAV",
 		Encrypted:   "EXBAJBQTNJMMZYZNURBTPMRUWSYRUZMALZKSZETLGOBNWIHVKYZHGKGYNDN",
 		MD5:         "13084003CF687FA0FEE313161767BF07",
 	},
+	{
+		Operation:   "Cassandra - Tokyo",
+		Measurement: 1,
+		Start:       time.Date(2013, 8, 1, 6, 0, 0, 0, time.Local),
+		Padded:      "XXSIXXXOXXCLOCKXANDXXFOURXMINUTESXXANDXXTHIRTEENXXXSECONDSX",
+		Encrypted:   "LSEFLMCXCDNLEBGOLTAAGUDKJJIEQYLREGGHVHSXDNZAQGJGVSZAWZPVUBX",
+		MD5:         "430A199D8124796826030643ED15E8F3",
+	},
+	{
+		Operation:   "Cassandra - Tokyo",
+		Measurement: 2,
+		Start:       time.Date(2013, 8, 1, 7, 0, 0, 0, time.Local),
+		Padded:      "XXXXXTHIRTEENXXSECONDSXXXPASTXXXXSEVENXXOXXCLOCKXXXSHARPXXX",
+		Encrypted:   "DPZDDKNEEJUPKNILMNSWYZWGSAREHNQSDAGSIKLPLAUSXYVTHIMVKNCLUOG",
+		MD5:         "DAB80D468DB085319D4D23DF1669CCFF",
+	},
+	{
+		Operation:   "Cassandra - Tokyo",
+		Measurement: 3,
+		Start:       time.Date(2013, 8, 1, 8, 0, 0, 0, time.Local),
+		Padded:      "XXXTWOXMINUTESXXXXANDXSEVENXXXXSECONDSXXXPASTXXEIGHTXXXPMXX",
+		Encrypted:   "QOQUAEMANBBXGRTRGNYMAUJOFZFJPTVTYSZEUHIMAMGMCQLAYMEXQELFGJZ",
+		MD5:         "DB55C2E1C350396EC9D59DA94532EF63",
+	},
 }
 
 func TestPackageFind(t *testing.T) {
 	for _, test := range tests {
 		t.Logf("Testing Operation: %s [%d]", test.Operation, test.Measurement)
-		p, err := NewPackage(
-			FMinator,
-			test.Measurement,
-			time.Date(2000, 1, 1, 2, 0, 0, 0, time.Local),
-			test.Encrypted,
-			test.MD5,
-		)
-		if err != nil {
-			t.Fatal(err)
+		for _, f := range Formats {
+			p, err := NewPackage(
+				f,
+				test.Measurement,
+				test.Start,
+				test.Encrypted,
+				test.MD5,
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if p.Find() {
+				t.Logf("Found OTP: %s", p.OTP)
+				break
+			}
 		}
-		p.Find()
 	}
 }

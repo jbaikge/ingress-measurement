@@ -43,6 +43,14 @@ var (
 	Ssecond = []byte(` SECOND`)
 )
 
+var Formats = []Format{
+	FMinator,
+	FCassandraSydney1,
+	FCassandraSydney2,
+	FCassandraMilan1,
+	FCassandraMilan3,
+}
+
 func (f Format) Encode(n int, t time.Time) (b []byte) {
 	b = make([]byte, 0, 64)
 	for _, f := range bytes.Fields(f) {

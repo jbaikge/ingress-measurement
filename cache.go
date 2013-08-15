@@ -9,7 +9,7 @@ import (
 
 const (
 	MinWordCount, MaxWordCount   = 1, 9
-	MinSpaceCount, MaxSpaceCount = 1, 12
+	MinSpaceCount, MaxSpaceCount = 0, 12
 )
 
 var SpaceCache [MaxWordCount + 1][MaxSpaceCount + 1][][][]byte

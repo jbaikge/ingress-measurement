@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"log"
 )
 
 // Generates the various spacing permutations to fill a string to the desired
@@ -21,7 +20,10 @@ func NewGenerator(s []byte, length int) (g *Generator) {
 		Fields: bytes.Fields(s),
 	}
 	padding := length - len(s)
-	log.Printf("Getting SpaceCache[%d][%d]", len(g.Fields), padding)
+	//log.Printf("Getting SpaceCache[%d][%d]", len(g.Fields), padding)
+	if len(g.Fields) > MaxWordCount {
+		return
+	}
 	if padding < 0 || padding > MaxSpaceCount {
 		return
 	}
