@@ -1,20 +1,25 @@
 package main
 
+import (
+	"github.com/cznic/mathutil"
+	"sort"
+)
+
 type Spacer struct {
-	Len      int // Number of spaces to define, should be words + 2
 	Min, Max int // Min - Max space count for each grouping
 	Spaces   int // Spaces required to pad rest of string
 	State    []int
 }
 
 var (
+	_ sort.Interface = new(Spacer) // Ensure Spacer follows sort.Interface
+
 	MaxSpaces = len(spaces)
-	spaces    = []byte("   ")
+	spaces    = []byte("  ")
 )
 
 func NewSpacer(words, spaces int) (s *Spacer) {
 	s = &Spacer{
-		Len:    words + 1,
 		Min:    0,
 		Max:    MaxSpaces - 1,
 		Spaces: spaces,
@@ -24,29 +29,11 @@ func NewSpacer(words, spaces int) (s *Spacer) {
 }
 
 func (s *Spacer) Bytes() (b [][]byte) {
-	b = make([][]byte, s.Len)
+	b = make([][]byte, len(s.State))
 	for i, l := range s.State {
 		b[i] = spaces[:l]
 	}
 	return
-}
-
-// Increments next spacing configuration
-func (s *Spacer) Increment() {
-	s.State[0]++
-
-	if s.State[0] <= s.Max {
-		return
-	}
-
-	for c := 0; c < s.Len-1; c++ {
-		if s.State[c] > s.Max {
-			s.State[c] = s.Min
-			s.State[c+1]++
-			continue
-		}
-		break
-	}
 }
 
 func (s *Spacer) Iter() [][]byte {
@@ -59,5 +46,12 @@ func (s *Spacer) Iter() [][]byte {
 }
 
 func (s *Spacer) Next() [][]byte {
+	if mathutil.PermutationNext(s) {
+		return s.Bytes()
+	}
 	return nil
 }
+
+func (s *Spacer) Len() int           { return len(s.State) }
+func (s *Spacer) Less(i, j int) bool { return s.State[i] > s.State[j] } // Intentionally backwards
+func (s *Spacer) Swap(i, j int)      { s.State[i], s.State[j] = s.State[j], s.State[i] }
