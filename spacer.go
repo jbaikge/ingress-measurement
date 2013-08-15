@@ -7,15 +7,10 @@ type Spacer struct {
 	State    []int
 }
 
-const MaxSpaces = 3
-
-var spaces [MaxSpaces]byte
-
-func init() {
-	for i := range spaces {
-		spaces[i] = ' '
-	}
-}
+var (
+	MaxSpaces = len(spaces)
+	spaces    = []byte("   ")
+)
 
 func NewSpacer(words, spaces int) (s *Spacer) {
 	s = &Spacer{
