@@ -21,7 +21,7 @@ var (
 func NewSpacer(words, spaces int) (s *Spacer) {
 	s = &Spacer{
 		Min:    0,
-		Max:    MaxSpaces - 1,
+		Max:    MaxSpaces,
 		Spaces: spaces,
 		State:  make([]int, words+1),
 	}
