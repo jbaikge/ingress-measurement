@@ -6,8 +6,14 @@ func OTP(a, b []byte) (c []byte) {
 	}
 
 	c = make([]byte, len(a))
+	var Δ byte
 	for i := range a {
-		c[i] = a[i]
+		if b[i] < a[i] {
+			Δ = 26 - (a[i] - b[i])
+		} else {
+			Δ = b[i] - a[i]
+		}
+		c[i] = 'A' + Δ
 	}
 	return
 }
