@@ -39,6 +39,7 @@ func (p *Package) Find() bool {
 	for t := p.TimeRange[0]; t.Before(p.TimeRange[1]); t = t.Add(time.Second) {
 		f := p.Format.Encode(p.Measurement, t)
 		g := NewGenerator(f, len(p.TimeString))
+		log.Printf("TimeString: %s Time: %s", p.TimeString, t)
 		for s := g.Iter(); s != nil; s = g.Next() {
 			otp := OTP(s, p.TimeString)
 			p.hasher.Write(otp)

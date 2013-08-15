@@ -65,6 +65,7 @@ func (s *Spacer) Iter() [][]byte {
 }
 
 func (s *Spacer) Next() [][]byte {
+Retry:
 	if !mathutil.PermutationNext(s) {
 		return nil
 	}
@@ -75,19 +76,16 @@ func (s *Spacer) Next() [][]byte {
 		high = false
 		for j := i; j < i+s.Max; j++ {
 			if high && s.State[j] == 0 {
-				goto ReNext
+				goto Retry
 			}
 			high = s.State[j] == 1
 		}
 		if !high && i > 0 && i < len(s.State)-s.Max {
-			goto ReNext
+			goto Retry
 		}
 	}
 
 	return s.Bytes()
-
-ReNext:
-	return s.Next()
 }
 
 func (s *Spacer) Len() int           { return len(s.State) }
