@@ -13,10 +13,10 @@ type Generator struct {
 	spacer *Spacer
 }
 
-func NewGenerator(s string, length int) (g *Generator) {
+func NewGenerator(s []byte, length int) (g *Generator) {
 	g = &Generator{
 		Len:    length,
-		Fields: bytes.Fields([]byte(s)),
+		Fields: bytes.Fields(s),
 	}
 	g.spacer = NewSpacer(len(g.Fields), length-len(s))
 	return

@@ -9,14 +9,14 @@ var genTests = []struct {
 	Exp []string
 }{
 	{
-		NewGenerator("moo", 4),
+		NewGenerator([]byte("moo"), 4),
 		[]string{
 			"Xmoo",
 			"mooX",
 		},
 	},
 	{
-		NewGenerator("moo moo mr cow", 19),
+		NewGenerator([]byte("moo moo mr cow"), 19),
 		[]string{
 			"XXmooXXXmooXXmrXcow",
 			"XXmooXXXmooXmrXXcow",
