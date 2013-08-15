@@ -5,6 +5,8 @@ import (
 	"sort"
 )
 
+// Generates the number of pads to insert between "fields" of a string to fill
+// the string's width
 type Spacer struct {
 	Min, Max int // Min - Max space count for each grouping
 	Spaces   int // Spaces required to pad rest of string
@@ -15,24 +17,28 @@ var (
 	_ sort.Interface = new(Spacer) // Ensure Spacer follows sort.Interface
 
 	MaxSpaces = len(spaces)
-	spaces    = []byte("  ")
+	spaces    = []byte("   ")
 )
 
 func NewSpacer(words, spaces int) (s *Spacer) {
 	s = &Spacer{
 		Min:    0,
-		Max:    MaxSpaces,
+		Max:    MaxSpaces - 1,
 		Spaces: spaces,
 		State:  make([]int, words+1),
 	}
 	return
 }
 
+// Creates an array of slices to insert between fields. Pads between the endcaps
+// get an extra character to account for the normal word space.
 func (s *Spacer) Bytes() (b [][]byte) {
 	b = make([][]byte, len(s.State))
 	for i, l := range s.State {
-		b[i] = spaces[:l]
+		b[i] = spaces[:l+1]
 	}
+	b[0] = b[0][1:]
+	b[len(b)-1] = b[len(b)-1][1:]
 	return
 }
 
