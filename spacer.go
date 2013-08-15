@@ -33,9 +33,16 @@ func NewSpacer(words, spaces int) (s *Spacer) {
 // Creates an array of slices to insert between fields. Pads between the endcaps
 // get an extra character to account for the normal word space.
 func (s *Spacer) Bytes() (b [][]byte) {
-	b = make([][]byte, len(s.State))
-	for i, l := range s.State {
-		b[i] = spaces[:l+1]
+	b = make([][]byte, len(s.State)/s.Max)
+	var l int
+	for i := range b {
+		l = 1
+		for _, bit := range s.State[i*s.Max : (i+1)*s.Max] {
+			if bit == 1 {
+				l++
+			}
+		}
+		b[i] = spaces[:l]
 	}
 	b[0] = b[0][1:]
 	b[len(b)-1] = b[len(b)-1][1:]
