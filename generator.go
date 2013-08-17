@@ -40,6 +40,8 @@ func (g *Generator) Iter() []byte {
 
 // Return next state or nil
 func (g *Generator) Next() []byte {
-	g.Spaces = g.spacer.Next()
-	return g.Bytes()
+	if g.Spaces = g.spacer.Next(); g.Spaces != nil {
+		return g.Bytes()
+	}
+	return nil
 }
