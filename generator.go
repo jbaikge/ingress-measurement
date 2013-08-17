@@ -29,6 +29,9 @@ func NewGenerator(s []byte, length int) (g *Generator, err error) {
 }
 
 func (g *Generator) Bytes() (b []byte) {
+	if len(g.Spaces) == 0 {
+		return nil
+	}
 	b = make([]byte, 0, g.Len)
 	b = append(b, g.Spaces[0]...)
 	for i := 0; i < len(g.Fields); i++ {
