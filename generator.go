@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 )
 
 // Generates the various spacing permutations to fill a string to the desired
@@ -13,7 +14,12 @@ type Generator struct {
 	spacer *Spacer
 }
 
-func NewGenerator(s []byte, length int) (g *Generator) {
+func NewGenerator(s []byte, length int) (g *Generator, err error) {
+	if l := len(s); l > length {
+		err = fmt.Errorf("String too long to fit in container: %d > %d", l, length)
+		return
+	}
+
 	g = &Generator{
 		Len:    length,
 		Fields: bytes.Fields(s),

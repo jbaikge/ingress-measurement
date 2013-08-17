@@ -6,18 +6,19 @@ import (
 
 func TestGenerator(t *testing.T) {
 	tests := []struct {
-		G   *Generator
+		Str []byte
+		Len int
 		Exp []string
 	}{
 		{
-			NewGenerator([]byte("moo"), 4),
+			[]byte("moo"), 4,
 			[]string{
 				"mooX",
 				"Xmoo",
 			},
 		},
 		{
-			NewGenerator([]byte("moo moo mr cow"), 19),
+			[]byte("moo moo mr cow"), 19,
 			[]string{
 				"mooXmooXmrXcowXXXXX",
 				"mooXmooXmrXXcowXXXX",
@@ -150,7 +151,11 @@ func TestGenerator(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		for i, v := 0, test.G.Iter(); v != nil; i, v = i+1, test.G.Next() {
+		g, err := NewGenerator(test.Str, test.Len)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for i, v := 0, g.Iter(); v != nil; i, v = i+1, g.Next() {
 			if exp := test.Exp[i]; exp != string(v) {
 				t.Errorf("Expected '%s'; Got '%s'", exp, v)
 			}

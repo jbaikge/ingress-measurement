@@ -39,7 +39,12 @@ func NewPackage(f Format, m int, start time.Time, ts string, h string) (p *Packa
 func (p *Package) Find() bool {
 	for t := p.TimeRange[0]; t.Before(p.TimeRange[1]); t = t.Add(time.Second) {
 		f := p.Format.Encode(p.Measurement, t)
-		g := NewGenerator(f, len(p.Encrypted))
+
+		g, err := NewGenerator(f, len(p.Encrypted))
+		if err != nil {
+			return false
+		}
+
 		for s := g.Iter(); s != nil; s = g.Next() {
 			otp := OTP(s, p.Encrypted)
 			p.hasher.Write(otp)
