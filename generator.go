@@ -10,8 +10,7 @@ type Generator struct {
 	Len    int
 	Fields [][]byte
 	Spaces [][]byte
-	cache  [][][]byte
-	i      int // cache index
+	spacer *Spacer
 }
 
 func NewGenerator(s []byte, length int) (g *Generator) {
@@ -19,15 +18,7 @@ func NewGenerator(s []byte, length int) (g *Generator) {
 		Len:    length,
 		Fields: bytes.Fields(s),
 	}
-	padding := length - len(s)
-	//log.Printf("Getting SpaceCache[%d][%d]", len(g.Fields), padding)
-	if len(g.Fields) > MaxWordCount {
-		return
-	}
-	if padding < 0 || padding > MaxSpaceCount {
-		return
-	}
-	g.cache = SpaceCache[len(g.Fields)][padding]
+	g.spacer = NewSpacer(len(g.Fields), length-len(s))
 	return
 }
 
@@ -43,20 +34,12 @@ func (g *Generator) Bytes() (b []byte) {
 
 // Reset state to beginning state
 func (g *Generator) Iter() []byte {
-	if len(g.cache) == 0 {
-		return nil
-	}
-	g.i = 0
-	g.Spaces = g.cache[g.i]
+	g.Spaces = g.spacer.Iter()
 	return g.Bytes()
 }
 
 // Return next state or nil
 func (g *Generator) Next() []byte {
-	if g.i++; g.i == len(g.cache) {
-		return nil
-	}
-
-	g.Spaces = g.cache[g.i]
+	g.Spaces = g.spacer.Next()
 	return g.Bytes()
 }
