@@ -42,7 +42,7 @@ func (p *Package) Find() bool {
 
 		g, err := NewGenerator(f, len(p.Encrypted))
 		if err != nil {
-			return false
+			continue
 		}
 
 		for s := g.Iter(); s != nil; s = g.Next() {
