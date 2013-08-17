@@ -9,7 +9,7 @@ type Spacer struct {
 	ch     chan [][]byte
 }
 
-var spaces = []byte("XXXX")
+var spaces = []byte("XXXXXX")
 
 func NewSpacer(words, spaces int) (s *Spacer) {
 	s = &Spacer{
