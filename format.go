@@ -35,6 +35,12 @@ var (
 
 	// "MEASUREMENT THREE IS AT NINE O THREE AND THIRTY SECONDS",
 	FCassandraMilan3 = Format(`MEASUREMENT # IS AT h O m AND s_`)
+
+	// ONE  MINUTE  AND THIRTY  ONE  SECONDS PAST  THREE  O CLOCK
+	FDusseldorf2 = Format(`m_ AND s_ PAST h O CLOCK`)
+
+	// XXXTHIRTYXXXSIXXSECONDSXPASTXXXXFOURXOXXXXCLOCKXXXXXSHARP
+	FDusseldorf3 = Format(`s_ PAST h O CLOCK SHARP`)
 )
 
 var (
@@ -44,6 +50,8 @@ var (
 )
 
 var Formats = []Format{
+	FDusseldorf2,
+	FDusseldorf3,
 	FMinator,
 	FCassandraSydney1,
 	FCassandraSydney2,

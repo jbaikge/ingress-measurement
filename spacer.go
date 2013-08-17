@@ -9,7 +9,7 @@ type Spacer struct {
 	ch     chan [][]byte
 }
 
-var spaces = []byte("XXXXXX")
+var spaces = []byte("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 
 func NewSpacer(words, spaces int) (s *Spacer) {
 	s = &Spacer{
@@ -47,8 +47,8 @@ func (s *Spacer) Space(pos, remain int) {
 		min, max = 1, remain
 	}
 
-	if max > len(spaces) {
-		max = len(spaces) - 1
+	if max > Config.MaxSpaces {
+		max = Config.MaxSpaces - 1
 	}
 
 	for i := min; i <= max; i++ {
