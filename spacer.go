@@ -6,8 +6,7 @@ type Spacer struct {
 	Spaces int // Spaces required to pad rest of string
 	State  []byte
 	Words  int
-
-	ch chan [][]byte
+	ch     chan [][]byte
 }
 
 var spaces = []byte("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
@@ -26,12 +25,7 @@ func NewSpacer(words, spaces int) (s *Spacer) {
 func (s *Spacer) Bytes() (b [][]byte) {
 	b = make([][]byte, len(s.State))
 	for i := range b {
-		if i > 0 && i < len(b)-1 {
-			// Spacing between words
-			b[i] = spaces[:s.State[i]+1]
-		} else {
-			b[i] = spaces[:s.State[i]]
-		}
+		b[i] = spaces[:s.State[i]]
 	}
 	return
 }
@@ -50,7 +44,7 @@ func (s *Spacer) Space(pos, remain int) {
 	case s.Words:
 		min, max = remain, remain
 	default:
-		min, max = 0, remain
+		min, max = 1, remain
 	}
 
 	for i := min; i <= max; i++ {
@@ -67,7 +61,7 @@ func (s *Spacer) Space(pos, remain int) {
 // Initalize the state
 func (s *Spacer) Iter() [][]byte {
 	s.ch = make(chan [][]byte)
-	go s.Space(0, s.Spaces)
+	go s.Space(0, s.Spaces+s.Words-1)
 	return <-s.ch
 }
 
