@@ -16,47 +16,26 @@ import (
 type Format []byte
 
 var (
-	// "TWO O CLOCK FOUR MINUTES AND THIRTY EIGHT SECONDS",
-	// "THREE O CLOCK ONE MINUTE AND FIFTY FIVE SECONDS",
-	// "FOUR O CLOCK THREE MINUTES AND TWENTY SECONDS",
-	// "FIVE O CLOCK TWO MINUTES AND TWENTY SEVEN SECONDS",
-	// "EIGHT O CLOCK TWO MINUTES AND FIFTY FOUR SECONDS",
-	FMinator = Format(`h O CLOCK m_ AND s_`)
-
-	// "ONE MINUTE THIRTY FOUR SECONDS PAST ONE O CLOCK",
-	// "THREE MINUTES FIFTY TWO SECONDS PAST THREE O CLOCK",
-	FCassandraSydney1 = Format(`m_ s_ PAST h O CLOCK`)
-
-	// "TWO O CLOCK AND FOUR MINUTES AND FIFTY FIVE SECONDS",
-	FCassandraSydney2 = Format(`h O CLOCK AND m_ AND s_`)
-
-	// "FIFTY FIVE SECONDS AND THREE MINUTES AFTER SEVEN",
-	FCassandraMilan1 = Format(`s_ AND m_ AFTER h`)
-
-	// "MEASUREMENT THREE IS AT NINE O THREE AND THIRTY SECONDS",
-	FCassandraMilan3 = Format(`MEASUREMENT # IS AT h O m AND s_`)
-
-	// ONE  MINUTE  AND THIRTY  ONE  SECONDS PAST  THREE  O CLOCK
-	FDusseldorf2 = Format(`m_ AND s_ PAST h O CLOCK`)
-
-	// XXXTHIRTYXXXSIXXSECONDSXPASTXXXXFOURXOXXXXCLOCKXXXXXSHARP
-	FDusseldorf3 = Format(`s_ PAST h O CLOCK SHARP`)
-)
-
-var (
 	Shour   = []byte(` HOUR`)
 	Sminute = []byte(` MINUTE`)
 	Ssecond = []byte(` SECOND`)
 )
 
-var Formats = []Format{
-	FDusseldorf2,
-	FDusseldorf3,
-	FMinator,
-	FCassandraSydney1,
-	FCassandraSydney2,
-	FCassandraMilan1,
-	FCassandraMilan3,
+var Formats = map[string]Format{
+	"FMinator":          Format(`h O CLOCK m_ AND s_`),
+	"FCassandraSydney1": Format(`m_ s_ PAST h O CLOCK`),
+	"FCassandraSydney2": Format(`h O CLOCK AND m_ AND s_`),
+	"FCassandraMilan1":  Format(`s_ AND m_ AFTER h`),
+	"FCassandraMilan3":  Format(`MEASUREMENT # IS AT h O m AND s_`),
+	"FDusseldorf2":      Format(`m_ AND s_ PAST h O CLOCK`),
+	"FDusseldorf3":      Format(`s_ PAST h O CLOCK SHARP`),
+	"FDusseldorf4":      Format(`m_ s_ AFTER h O CLOCK`),
+	"Manilla1":          Format(`h O CLOCK m_ s_`),
+	"Manilla2":          Format(`m_ s_ PAST h PM`),
+	"Manilla3":          Format(`m_ AND s_ PAST h PM`),
+	"DC1":               Format(`s_ AND m_ PAST h PM`),
+	"DC2":               Format(`h O m AND s_`),
+	"DC3":               Format(`h O CLOCK AND s_`),
 }
 
 func (f Format) Encode(n int, t time.Time) (b []byte) {

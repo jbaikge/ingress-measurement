@@ -14,52 +14,52 @@ func TestEncode(t *testing.T) {
 	}{
 		{
 			1, time.Date(2000, 1, 1, 14, 4, 38, 0, time.Local),
-			FMinator,
+			Formats["FMinator"],
 			"TWO O CLOCK FOUR MINUTES AND THIRTY EIGHT SECONDS",
 		},
 		{
 			1, time.Date(2000, 1, 1, 15, 1, 55, 0, time.Local),
-			FMinator,
+			Formats["FMinator"],
 			"THREE O CLOCK ONE MINUTE AND FIFTY FIVE SECONDS",
 		},
 		{
 			1, time.Date(2000, 1, 1, 16, 3, 20, 0, time.Local),
-			FMinator,
+			Formats["FMinator"],
 			"FOUR O CLOCK THREE MINUTES AND TWENTY SECONDS",
 		},
 		{
 			1, time.Date(2000, 1, 1, 17, 2, 27, 0, time.Local),
-			FMinator,
+			Formats["FMinator"],
 			"FIVE O CLOCK TWO MINUTES AND TWENTY SEVEN SECONDS",
 		},
 		{
 			1, time.Date(2000, 1, 1, 8, 2, 54, 0, time.Local),
-			FMinator,
+			Formats["FMinator"],
 			"EIGHT O CLOCK TWO MINUTES AND FIFTY FOUR SECONDS",
 		},
 		{
 			1, time.Date(2000, 1, 1, 1, 1, 34, 0, time.Local),
-			FCassandraSydney1,
+			Formats["FCassandraSydney1"],
 			"ONE MINUTE THIRTY FOUR SECONDS PAST ONE O CLOCK",
 		},
 		{
 			1, time.Date(2000, 1, 1, 3, 3, 52, 0, time.Local),
-			FCassandraSydney1,
+			Formats["FCassandraSydney1"],
 			"THREE MINUTES FIFTY TWO SECONDS PAST THREE O CLOCK",
 		},
 		{
 			1, time.Date(2000, 1, 1, 14, 4, 55, 0, time.Local),
-			FCassandraSydney2,
+			Formats["FCassandraSydney2"],
 			"TWO O CLOCK AND FOUR MINUTES AND FIFTY FIVE SECONDS",
 		},
 		{
 			1, time.Date(2000, 1, 1, 19, 3, 55, 0, time.Local),
-			FCassandraMilan1,
+			Formats["FCassandraMilan1"],
 			"FIFTY FIVE SECONDS AND THREE MINUTES AFTER SEVEN",
 		},
 		{
 			3, time.Date(2000, 1, 1, 21, 3, 30, 0, time.Local),
-			FCassandraMilan3,
+			Formats["FCassandraMilan3"],
 			"MEASUREMENT THREE IS AT NINE O THREE AND THIRTY SECONDS",
 		},
 	}
