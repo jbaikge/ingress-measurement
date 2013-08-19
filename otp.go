@@ -1,13 +1,8 @@
 package main
 
-import (
-	"fmt"
-)
-
 func OTP(a, b []byte) (c []byte) {
 	if len(a) != len(b) {
-		panic(fmt.Sprintf("%s != %s", a, b))
-		return
+		return nil
 	}
 
 	c = make([]byte, len(a))
