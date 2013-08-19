@@ -49,7 +49,7 @@ func (s *Spacer) Space(pos, remain, maxWidth uint64) {
 	for i := min; i <= max; i++ {
 		s.State &= ^(0xF << uint(pos*4))
 		s.State |= i << uint(pos*4)
-		s.Space(pos+1, remain-i, 0xF)
+		s.Space(pos+1, remain-i, uint64(Config.MaxSpaces))
 	}
 	if pos == 0 {
 		close(s.ch)
