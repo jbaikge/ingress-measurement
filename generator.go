@@ -10,7 +10,7 @@ import (
 type Generator struct {
 	Len    int
 	Fields [][]byte
-	Spaces [][]byte
+	Spaces uint64
 	spacer *Spacer
 }
 
@@ -29,14 +29,15 @@ func NewGenerator(s []byte, length int) (g *Generator, err error) {
 }
 
 func (g *Generator) Bytes() (b []byte) {
-	if len(g.Spaces) == 0 {
+	if g.Spaces == 0 {
 		return nil
 	}
 	b = make([]byte, 0, g.Len)
-	b = append(b, g.Spaces[0]...)
-	for i := 0; i < len(g.Fields); i++ {
+	b = append(b, spaces[:g.Spaces&0xF]...)
+	for i := uint(0); i < uint(len(g.Fields)); i++ {
 		b = append(b, g.Fields[i]...)
-		b = append(b, g.Spaces[i+1]...)
+		l := g.Spaces & (0xF << ((i + 1) * 4)) / (0xF << (i * 4))
+		b = append(b, spaces[:l]...)
 	}
 	return b
 }
@@ -49,7 +50,7 @@ func (g *Generator) Iter() []byte {
 
 // Return next state or nil
 func (g *Generator) Next() []byte {
-	if g.Spaces = g.spacer.Next(); g.Spaces != nil {
+	if g.Spaces = g.spacer.Next(); g.Spaces != 0 {
 		return g.Bytes()
 	}
 	return nil

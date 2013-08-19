@@ -1,40 +1,35 @@
 package main
 
+import (
+	//"log"
+	"sync"
+)
+
 // Generates the number of pads to insert between "fields" of a string to fill
 // the string's width
 type Spacer struct {
-	Spaces int // Spaces required to pad rest of string
-	State  []byte
-	Words  int
-	ch     chan [][]byte
+	Spaces uint64 // Spaces required to pad rest of string
+	Words  uint64
+	State  uint64
+	ch     chan uint64
+	wait   sync.WaitGroup
 }
 
 var spaces = []byte("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 
 func NewSpacer(words, spaces int) (s *Spacer) {
 	s = &Spacer{
-		Spaces: spaces,
-		Words:  words,
-	}
-	s.State = make([]byte, s.Words+1)
-	return
-}
-
-// Creates an array of slices to insert between fields. Pads between the endcaps
-// get an extra character to account for the normal word space.
-func (s *Spacer) Bytes() (b [][]byte) {
-	b = make([][]byte, len(s.State))
-	for i := range b {
-		b[i] = spaces[:s.State[i]]
+		Spaces: uint64(spaces),
+		Words:  uint64(words),
 	}
 	return
 }
 
 // Thanks to Derek Mauro for the recursive algorithm
-func (s *Spacer) Space(pos, remain int) {
-	var min, max int
-	if pos == len(s.State) {
-		s.ch <- s.Bytes()
+func (s *Spacer) Space(pos, remain, maxWidth uint64) {
+	var min, max uint64
+	if pos == s.Words+1 {
+		s.ch <- s.State
 		return
 	}
 
@@ -47,28 +42,27 @@ func (s *Spacer) Space(pos, remain int) {
 		min, max = 1, remain
 	}
 
-	if max > Config.MaxSpaces {
-		max = Config.MaxSpaces - 1
+	if max > maxWidth {
+		max = maxWidth
 	}
 
 	for i := min; i <= max; i++ {
-		s.State[pos] = byte(i)
-		s.Space(pos+1, remain-i)
+		s.State &= ^(0xF << uint(pos*4))
+		s.State |= i << uint(pos*4)
+		s.Space(pos+1, remain-i, 0xF)
 	}
-
-	// Close channel after first iteration completes
 	if pos == 0 {
 		close(s.ch)
 	}
 }
 
 // Initalize the state
-func (s *Spacer) Iter() [][]byte {
-	s.ch = make(chan [][]byte)
-	go s.Space(0, s.Spaces+s.Words-1)
+func (s *Spacer) Iter() uint64 {
+	s.ch = make(chan uint64)
+	go s.Space(0, s.Spaces+s.Words-1, s.Spaces+1)
 	return <-s.ch
 }
 
-func (s *Spacer) Next() [][]byte {
+func (s *Spacer) Next() uint64 {
 	return <-s.ch
 }
