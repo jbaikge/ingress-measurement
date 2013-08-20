@@ -39,7 +39,7 @@ func (s *Spacer) Space(pos, remain, maxWidth uint64) {
 	case s.Words:
 		min, max = remain, remain
 	default:
-		min, max = 0, remain
+		min, max = 1, remain
 	}
 
 	if max > maxWidth {

@@ -18,10 +18,7 @@ var Config = struct {
 	Low, High   int
 }{}
 
-var (
-	start   string
-	formats []Format
-)
+var start string
 
 func init() {
 	flag.IntVar(&Config.Measurement, "m", 1, "Measurement")
@@ -31,11 +28,6 @@ func init() {
 	flag.StringVar(&Config.MD5, "md5", "", "MD5 (from Ingress)")
 	flag.IntVar(&Config.Low, "l", 0, "Low format")
 	flag.IntVar(&Config.High, "h", len(Formats), "High format")
-
-	formats = make([]Format, 0, len(Formats))
-	for i := range Formats {
-		formats = append(formats, Formats[i].Format)
-	}
 }
 
 func main() {
@@ -47,7 +39,8 @@ func main() {
 	}
 
 	var wait sync.WaitGroup
-	for i := range formats[Config.Low:Config.High] {
+	for _, f := range Formats[Config.Low:Config.High] {
+		log.Printf("Analyzing %-24s %s", f.Name, f.Format)
 		wait.Add(1)
 		go func(f Format) {
 			defer wait.Done()
@@ -67,7 +60,7 @@ func main() {
 				os.Exit(0)
 			}
 			log.Printf("Completed Analyzing %s", f)
-		}(formats[i])
+		}(f.Format)
 	}
 	wait.Wait()
 }
