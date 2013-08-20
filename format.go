@@ -21,22 +21,70 @@ var (
 	Ssecond = []byte(` SECOND`)
 )
 
-var Formats = map[string]Format{
-	"FMinator":          Format(`h O CLOCK m_ AND s_`),
-	"FCassandraSydney1": Format(`m_ s_ PAST h O CLOCK`),
-	"FCassandraSydney2": Format(`h O CLOCK AND m_ AND s_`),
-	"FCassandraMilan1":  Format(`s_ AND m_ AFTER h`),
-	"FCassandraMilan3":  Format(`MEASUREMENT # IS AT h O m AND s_`),
-	"FDusseldorf2":      Format(`m_ AND s_ PAST h O CLOCK`),
-	"FDusseldorf3":      Format(`s_ PAST h O CLOCK SHARP`),
-	"FDusseldorf4":      Format(`m_ s_ AFTER h O CLOCK`),
-	"Manilla1":          Format(`h O CLOCK m_ s_`),
-	"Manilla2":          Format(`m_ s_ PAST h PM`),
-	"Manilla3":          Format(`m_ AND s_ PAST h PM`),
-	"DC1":               Format(`s_ AND m_ PAST h PM`),
-	"DC2":               Format(`h O m AND s_`),
-	"DC3":               Format(`h O CLOCK AND s_`),
-	"Paris1":            Format(`h O CLOCK AND m_ AND s SEC`),
+var Formats = []struct {
+	Name   string
+	Format Format
+}{
+	{
+		"FMinator",
+		Format(`h O CLOCK m_ AND s_`),
+	},
+	{
+		"FCassandraSydney1",
+		Format(`m_ s_ PAST h O CLOCK`),
+	},
+	{
+		"FCassandraSydney2",
+		Format(`h O CLOCK AND m_ AND s_`),
+	},
+	{
+		"FCassandraMilan1",
+		Format(`s_ AND m_ AFTER h`),
+	},
+	{
+		"FCassandraMilan3",
+		Format(`MEASUREMENT # IS AT h O m AND s_`),
+	},
+	{
+		"FDusseldorf2",
+		Format(`m_ AND s_ PAST h O CLOCK`),
+	},
+	{
+		"FDusseldorf3",
+		Format(`s_ PAST h O CLOCK SHARP`),
+	},
+	{
+		"FDusseldorf4",
+		Format(`m_ s_ AFTER h O CLOCK`),
+	},
+	{
+		"Manilla1",
+		Format(`h O CLOCK m_ s_`),
+	},
+	{
+		"Manilla2",
+		Format(`m_ s_ PAST h PM`),
+	},
+	{
+		"Manilla3",
+		Format(`m_ AND s_ PAST h PM`),
+	},
+	{
+		"DC1",
+		Format(`s_ AND m_ PAST h PM`),
+	},
+	{
+		"DC2",
+		Format(`h O m AND s_`),
+	},
+	{
+		"DC3",
+		Format(`h O CLOCK AND s_`),
+	},
+	{
+		"Paris1",
+		Format(`h O CLOCK AND m_ AND s SEC`),
+	},
 }
 
 func (f Format) Encode(n int, t time.Time) (b []byte) {

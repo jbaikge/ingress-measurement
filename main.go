@@ -34,7 +34,7 @@ func init() {
 
 	formats = make([]Format, 0, len(Formats))
 	for i := range Formats {
-		formats = append(formats, Formats[i])
+		formats = append(formats, Formats[i].Format)
 	}
 }
 
