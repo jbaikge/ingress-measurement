@@ -15,9 +15,13 @@ var Config = struct {
 	Encrypted   string
 	MaxSpaces   int
 	MD5         string
+	Low, High   int
 }{}
 
-var start string
+var (
+	start   string
+	formats []Format
+)
 
 func init() {
 	flag.IntVar(&Config.Measurement, "m", 1, "Measurement")
@@ -25,6 +29,13 @@ func init() {
 	flag.StringVar(&start, "s", "8:00", "Start time")
 	flag.StringVar(&Config.Encrypted, "e", "", "Encrypted string (from image)")
 	flag.StringVar(&Config.MD5, "md5", "", "MD5 (from Ingress)")
+	flag.IntVar(&Config.Low, "l", 0, "Low format")
+	flag.IntVar(&Config.High, "h", len(Formats), "High format")
+
+	formats = make([]Format, 0, len(Formats))
+	for i := range Formats {
+		formats = append(formats, Formats[i])
+	}
 }
 
 func main() {
@@ -36,7 +47,7 @@ func main() {
 	}
 
 	var wait sync.WaitGroup
-	for i := range Formats {
+	for i := range formats[Config.Low:Config.High] {
 		wait.Add(1)
 		go func(f Format) {
 			defer wait.Done()
@@ -56,7 +67,7 @@ func main() {
 				os.Exit(0)
 			}
 			log.Printf("Completed Analyzing %s", f)
-		}(Formats[i])
+		}(formats[i])
 	}
 	wait.Wait()
 }
