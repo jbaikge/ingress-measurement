@@ -5,6 +5,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"runtime"
 	"sync"
 	"time"
 )
@@ -37,6 +38,13 @@ func main() {
 	if Config.Start, err = time.Parse("15:00", start); err != nil {
 		log.Fatal(err)
 	}
+
+	go func() {
+		for {
+			log.Printf("Go Routines: %d", runtime.NumGoroutine())
+			<-time.After(15 * time.Second)
+		}
+	}()
 
 	var wait sync.WaitGroup
 	for _, f := range Formats[Config.Low:Config.High] {
