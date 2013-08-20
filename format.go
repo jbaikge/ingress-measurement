@@ -36,6 +36,7 @@ var Formats = map[string]Format{
 	"DC1":               Format(`s_ AND m_ PAST h PM`),
 	"DC2":               Format(`h O m AND s_`),
 	"DC3":               Format(`h O CLOCK AND s_`),
+	"Paris1":            Format(`h O CLOCK AND m_ AND s SEC`),
 }
 
 func (f Format) Encode(n int, t time.Time) (b []byte) {
