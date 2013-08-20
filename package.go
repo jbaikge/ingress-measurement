@@ -45,7 +45,6 @@ func (p *Package) Find() bool {
 		wg.Add(1)
 		go func(t time.Time) {
 			defer wg.Done()
-			hasher := md5.New()
 
 			f := p.Format.Encode(p.Measurement, t)
 
@@ -55,16 +54,20 @@ func (p *Package) Find() bool {
 			}
 
 			for s := g.Iter(); s != nil; s = g.Next() {
-				otp := OTP(s, p.Encrypted)
-				hasher.Write(otp)
-				sum := hasher.Sum(nil)
-				if sum[0] == p.Hash[0] && bytes.Equal(sum, p.Hash) {
-					p.OTP = otp
-					p.TimeString = s
-					found <- true
-					return
-				}
-				hasher.Reset()
+				wg.Add(1)
+				go func(s []byte) {
+					defer wg.Done()
+					hasher := md5.New()
+					otp := OTP(s, p.Encrypted)
+					hasher.Write(otp)
+					sum := hasher.Sum(nil)
+					if sum[0] == p.Hash[0] && bytes.Equal(sum, p.Hash) {
+						p.OTP = otp
+						p.TimeString = s
+						found <- true
+						return
+					}
+				}(s)
 			}
 		}(t)
 	}
