@@ -59,7 +59,7 @@ func (s *Spacer) Space(pos, remain, maxWidth uint64) {
 // Initalize the state
 func (s *Spacer) Iter() uint64 {
 	s.ch = make(chan uint64)
-	go s.Space(0, s.Spaces+s.Words-1, s.Spaces+1)
+	go s.Space(0, s.Spaces+s.Words-1, uint64(Config.MaxSpaces))
 	return <-s.ch
 }
 
