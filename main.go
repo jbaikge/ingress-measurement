@@ -39,6 +39,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Printf("Config: \n%+v", Config)
+
 	go func() {
 		for {
 			log.Printf("Go Routines: %d", runtime.NumGoroutine())
