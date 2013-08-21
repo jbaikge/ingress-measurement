@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"flag"
 	"log"
+	"net/http"
 	"os"
 	"runtime"
 	"sync"
 	"time"
+
+	_ "net/http/pprof"
 )
 
 var Config = struct {
@@ -34,6 +37,10 @@ func init() {
 func main() {
 	var err error
 	flag.Parse()
+
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
 
 	if Config.Start, err = time.Parse("15:00", start); err != nil {
 		log.Fatal(err)
