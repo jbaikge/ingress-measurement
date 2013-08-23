@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"hash"
+	"log"
 	"sync"
 	"time"
 )
@@ -46,28 +47,34 @@ func (p *Package) Find() bool {
 		go func(t time.Time) {
 			defer wg.Done()
 
-			f := p.Format.Encode(p.Measurement, t)
-
-			g, err := NewGenerator(f, len(p.Encrypted))
-			if err != nil {
-				return
+			fs := [][]byte{
+				p.Format.Encode(p.Measurement, t),
+				p.Format.TheHour(p.Measurement, t),
 			}
 
-			for s := g.Iter(); s != nil; s = g.Next() {
-				wg.Add(1)
-				go func(s []byte) {
-					defer wg.Done()
-					hasher := md5.New()
-					otp := OTP(s, p.Encrypted)
-					hasher.Write(otp)
-					sum := hasher.Sum(nil)
-					if sum[0] == p.Hash[0] && bytes.Equal(sum, p.Hash) {
-						p.OTP = otp
-						p.TimeString = s
-						found <- true
-						return
-					}
-				}(s)
+			for _, f := range fs {
+				g, err := NewGenerator(f, len(p.Encrypted))
+				if err != nil {
+					return
+				}
+
+				for s := g.Iter(); s != nil; s = g.Next() {
+					wg.Add(1)
+					log.Printf("%s\n", s)
+					go func(s []byte) {
+						defer wg.Done()
+						hasher := md5.New()
+						otp := OTP(s, p.Encrypted)
+						hasher.Write(otp)
+						sum := hasher.Sum(nil)
+						if sum[0] == p.Hash[0] && bytes.Equal(sum, p.Hash) {
+							p.OTP = otp
+							p.TimeString = s
+							found <- true
+							return
+						}
+					}(s)
+				}
 			}
 		}(t)
 	}

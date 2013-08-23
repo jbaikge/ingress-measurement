@@ -85,6 +85,22 @@ var Formats = []struct {
 		"Paris1",
 		Format(`h O CLOCK AND m_ AND s SEC`),
 	},
+	{
+		"Paris2",
+		Format(`s_ AND m_ PAST h`),
+	},
+	{
+		"SaoPaulo1",
+		Format(`m_ AND s_ AFTER h`),
+	},
+	{
+		"SaoPaulo2",
+		Format(`s_ PAST h SHARP`),
+	},
+	{
+		"HongKong1",
+		Format(`m_ s_ PAST h`),
+	},
 }
 
 func (f Format) Encode(n int, t time.Time) (b []byte) {
@@ -105,6 +121,40 @@ func (f Format) Encode(n int, t time.Time) (b []byte) {
 					b = append(b, 'S')
 				}
 			}
+		case 'm':
+			m := t.Minute()
+			b = append(b, Numbers[m]...)
+			if len(f) == 2 && f[1] == '_' {
+				b = append(b, Sminute...)
+				if m != 1 {
+					b = append(b, 'S')
+				}
+			}
+		case 's':
+			s := t.Second()
+			b = append(b, Numbers[s]...)
+			if len(f) == 2 && f[1] == '_' {
+				b = append(b, Ssecond...)
+				if s != 1 {
+					b = append(b, 'S')
+				}
+			}
+		default:
+			b = append(b, f...)
+		}
+		b = append(b, ' ')
+	}
+	return b[:len(b)-1]
+}
+
+func (f Format) TheHour(n int, t time.Time) (b []byte) {
+	b = make([]byte, 0, 64)
+	for _, f := range bytes.Fields(f) {
+		switch f[0] {
+		case '#':
+			b = append(b, Numbers[n]...)
+		case 'h':
+			b = append(b, []byte(`THE HOUR`)...)
 		case 'm':
 			m := t.Minute()
 			b = append(b, Numbers[m]...)

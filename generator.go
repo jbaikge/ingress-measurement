@@ -53,5 +53,6 @@ func (g *Generator) Next() []byte {
 	if g.Spaces = g.spacer.Next(); g.Spaces != 0 {
 		return g.Bytes()
 	}
+	
 	return nil
 }
