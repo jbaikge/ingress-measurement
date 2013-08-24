@@ -75,20 +75,20 @@ func (s *Spacer) Iter() uint64 {
 		// s.Space(0, s.Required, uint64(3))
 
 		// log.Println("DeltaDown")
-		s.DeltaDown()
+		//s.DeltaDown()
 		// If we return here, it means the entire program has not exited..
 
-		// s.notify = make(chan uint64)
-		// go func() {
-		// 	for v := range s.notify {
-		// 		if !s.past.Seen(v) {
-		// 			s.ch <- v
-		// 		}
-		// 	}
-		// 	close(s.ch)
-		// }()
+		s.notify = make(chan uint64)
+		go func() {
+			for v := range s.notify {
+				if !s.past.Seen(v) {
+					s.ch <- v
+				}
+			}
+			close(s.ch)
+		}()
 		// log.Println("Longhaul")
-		// s.Space(0, s.Required, uint64(Config.MaxSpaces))
+		s.Space(0, s.Required, uint64(Config.MaxSpaces))
 	}()
 	return <-s.ch
 }
