@@ -41,10 +41,10 @@ var Formats = []struct {
 		"FCassandraMilan1",
 		Format(`s_ AND m_ AFTER h`),
 	},
-	{
-		"FCassandraMilan3",
-		Format(`MEASUREMENT # IS AT h O m AND s_`),
-	},
+	// {
+	// 	"FCassandraMilan3",
+	// 	Format(`MEASUREMENT # IS AT h O m AND s_`),
+	// },
 	{
 		"FDusseldorf2",
 		Format(`m_ AND s_ PAST h O CLOCK`),
